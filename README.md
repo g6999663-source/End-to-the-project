@@ -1,10 +1,4 @@
-
-
-![Status](https://img.shields.io/badge/status-OK-brightgreen)
-![Python](https://img.shields.io/badge/Python-3.10-blue)
-![Pandas](https://img.shields.io/badge/Pandas-2.3.3-purple)
-#python_labi
-
+## 1 Неделя
 ## Описание:
 Учебный проект по курсу анализа данных. Настройка окружения и базовая структура репозитория.
 ## Результат проверки:
