@@ -37,3 +37,40 @@ pandas: 2.3.3
 ```
 ### 3. Быстрый запуск
 При запуске setup_env.bat smoke test выполняется автоматически. Успешное выполнение завершается сообщением [OK].
+
+## Week 2 — API Extract (variant_04)
+
+### Вариант 1
+conda run -n my_ml_env python src/extract/extract.py
+
+### Вариант 2
+python src/extract/extract.py (если активирована среда)
+
+---
+
+### Ожидаемый результат
+
+Variant: 4 - Погода (архив) - Лондон
+
+URL: https://archive-api.open-meteo.com/v1/archive
+
+Params: {'latitude': 51.5072, 'longitude': -0.1276, 'timezone': 'Europe/London', 'start_date': '2024-01-01', 'end_date': '2024-01-07', 'hourly': ['temperature_2m', 'relative_humidity_2m', 'precipitation', 'wind_speed_10m']}
+
+Status: 200
+
+Saved: data/raw/variant_04/2024-01-01_2024-01-07_2026-05-28_14-30-00.json
+
+---
+
+### Файлы создаются
+
+data/raw/variant_04/YYYY-MM-DD_HH-MM-SS.json  ← raw API ответ  
+docs/Data_Contract.md                         ← документация API  
+docs/Implementation_Plan.md                   ← план реализации  
+docs/LLM_Usage_Log.md                         ← лог использования LLM  
+
+---
+
+### Требования
+- Windows 10/11
+- Anaconda/Miniconda
