@@ -7,23 +7,6 @@ python: D:\anaconda\anaconda3\python.exe
 pandas: 2.3.3
 ```
 ### Проверка пройдена успешно
-## Структура проекта:
-```
-python_labi/
-│
-├── broken_env.py          # Диагностика
-├── requirements.txt       # Зависимости
-├── README.md              # Документация
-│
-├── scripts/
-│   └── setup_env.bat      # Автоматическая настройка
-│
-├── src/                   # Исходный код
-├── data/                  # Данные
-├── notebooks/             # Ноутбуки
-├── docs/                  # Документы
-├── configs/               # Конфиги
-└── tests/                 # Тесты
 ```
 ## Быстрый старт:
 ##  Инструкция для Windows
