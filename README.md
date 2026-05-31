@@ -658,3 +658,107 @@ API → raw → normalized → mart → PostgreSQL → DQ → visualization → 
 - воспроизводимость
 - согласованность
 - прозрачность изменений
+## Week 10 — Docker + PostgreSQL + Metabase (BI)
+
+### Что сделано
+
+- Развёрнуты контейнеры **PostgreSQL** и **Metabase** через Docker Compose
+- Данные витрины `daily_weather` загружены в PostgreSQL (14 дней, январь 2024)
+- Metabase подключён к базе `mydb`, таблица `daily_weather` синхронизирована
+- Созданы **три визуализации**:
+  - линейный график динамики `avg_temp`
+  - столбчатая диаграмма **топ‑5 дней** по `total_precip`
+  - гистограмма распределения `avg_temp` (бины по целым градусам)
+- Построен **дашборд** `Weather Analytics London (variant_04)`
+- Сделаны скриншоты дашборда и каждого графика → `docs/bi/`
+
+### Используемые технологии
+
+- Docker / Docker Compose
+- PostgreSQL 15‑alpine
+- Metabase (latest)
+- Python (ETL, загрузка данных)
+- pandas, SQLAlchemy
+
+### Запуск проекта
+
+1. **Запуск контейнеров**
+
+   ```bash
+   docker compose up -d
+   ```
+
+2. **Проверка контейнеров**
+
+   ```bash
+   docker compose ps
+   ```
+
+3. **Загрузка данных в PostgreSQL** (если ещё не загружены)
+
+   ```bash
+   python src/load/load_incremental.py --mode full
+   ```
+
+   или через основной пайплайн:
+
+   ```bash
+   python src/pipeline/pipeline.py --mode full
+   ```
+
+4. **Открыть Metabase**
+
+   - Адрес: `http://localhost:3000`
+   - Настройки подключения к БД:
+     - Тип: **PostgreSQL**
+     - Host: `postgres`
+     - Port: `5432`
+     - Database: `mydb`
+     - User: `myuser`
+     - Password: `mysecretpassword`
+
+### Параметры PostgreSQL (из `docker-compose.yml`)
+
+| Параметр   | Значение            |
+|------------|---------------------|
+| Database   | `mydb`              |
+| User       | `myuser`            |
+| Password   | `mysecretpassword`  |
+| Port       | `5432` (на хосте тоже 5432) |
+
+### Docker Volumes
+
+Используются два именованных тома:
+
+- `pgdata` – сохраняет данные PostgreSQL между перезапусками
+- `metabase_data` – сохраняет настройки Metabase (вопросы, дашборды, подключения)
+
+Тома позволяют не терять данные при пересоздании контейнеров.
+
+### BI Dashboard
+
+- **Название дашборда**: `Weather Analytics London (variant_04)`
+- **Включённые визуализации**:
+  1. **Динамика средней температуры** – линейный график `avg_temp` по `date`
+  2. **Топ‑5 дней по осадкам** – столбчатая диаграмма, сумма `total_precip`, сортировка DESC, лимит 5
+  3. **Распределение средней температуры** – гистограмма с бинами `floor(avg_temp)`
+
+**SQL-запрос для гистограммы** (для справки):
+
+```sql
+SELECT 
+  floor(avg_temp) AS temp_bin,
+  COUNT(*) AS days_count
+FROM daily_weather
+GROUP BY floor(avg_temp)
+ORDER BY temp_bin;
+```
+
+### Скриншоты
+
+Все скриншоты сохранены в папке `docs/bi/`:
+
+- `dashboard_full.png` – общий вид дашборда
+- `line_chart_temp.png` – линейный график температуры
+- `bar_chart_precip.png` – топ‑5 дней по осадкам
+- `histogram_temp.png` – гистограмма распределения температуры
